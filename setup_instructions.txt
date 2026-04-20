@@ -1,0 +1,85 @@
+XAMPP Setup Instructions for User Registration System
+====================================================
+
+1. DATABASE SETUP:
+   ----------------
+   a. Start XAMPP and make sure Apache and MySQL are running
+   b. Open phpMyAdmin (http://localhost/phpmyadmin)
+   c. Click on "Import" tab
+   d. Select the "database_schema.sql" file from your project folder
+   e. Click "Go" to import the database schema
+   
+   OR manually run:
+   - Create database: user_registration_db
+   - Import the SQL file content
+
+2. FILE STRUCTURE:
+   ----------------
+   Make sure all files are in your htdocs/WEB folder:
+   - LOGIN.html (Login form)
+   - registration.html (Registration form)
+   - dashboard.html (User dashboard after login)
+   - script.js (Frontend validation and AJAX)
+   - config.php (Database connection and security)
+   - login.php (Login backend)
+   - register.php (Registration backend)
+   - database_schema.sql (Database structure)
+
+3. CONFIGURATION:
+   ---------------
+   The system is configured for XAMPP defaults:
+   - Host: localhost
+   - Username: root
+   - Password: (empty)
+   - Database: user_registration_db
+
+4. ACCESS URLs:
+   -------------
+   - Login: http://localhost/WEB/LOGIN.html
+   - Registration: http://localhost/WEB/registration.html
+   - Dashboard: http://localhost/WEB/dashboard.html (after login)
+
+5. FEATURES:
+   -----------
+   - Client-side validation with JavaScript
+   - Server-side validation with PHP
+   - Password hashing with PHP's password_hash()
+   - SQL injection protection with PDO
+   - XSS protection with htmlspecialchars
+   - Rate limiting for login attempts
+   - Session management
+   - Error handling and logging
+
+6. VALIDATION RULES:
+   ------------------
+   - First/Last Name: Required, letters only, min 2 chars
+   - Email: Required, valid email format, unique
+   - Phone: Required, minimum 10 digits
+   - Password: Required, min 8 chars with uppercase, lowercase, number, special char
+   - Department: Required selection
+   - Gender: Required selection
+   - Hobbies: At least one must be selected
+
+7. SECURITY FEATURES:
+   -------------------
+   - Password hashing (bcrypt)
+   - SQL injection prevention (PDO prepared statements)
+   - XSS prevention (htmlspecialchars)
+   - CSRF protection (session tokens)
+   - Rate limiting (max 5 failed attempts in 15 minutes)
+   - Session timeout (30 minutes)
+
+8. TROUBLESHOOTING:
+   ------------------
+   - If database connection fails: Check XAMPP services are running
+   - If registration fails: Check database permissions
+   - If login fails: Check email/password in database
+   - Check PHP error logs: C:\xampp\apache\logs\error.log
+
+9. TESTING:
+   ----------
+   - Try registering a new user
+   - Verify data appears in phpMyAdmin
+   - Test login with registered credentials
+   - Test validation rules (empty fields, invalid email, etc.)
+   - Test dashboard display after login

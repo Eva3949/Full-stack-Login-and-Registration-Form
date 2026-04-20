@@ -41,7 +41,7 @@ CREATE TABLE IF NOT EXISTS user_sessions (
     ip_address VARCHAR(45) NOT NULL,
     user_agent TEXT,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    expires_at TIMESTAMP NOT NULL,
+    expires_at TIMESTAMP DEFAULT (DATE_ADD(NOW(), INTERVAL 30 MINUTE)),
     is_active BOOLEAN DEFAULT TRUE,
     FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
     INDEX idx_session_id (session_id),

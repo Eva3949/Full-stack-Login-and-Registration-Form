@@ -88,8 +88,8 @@ class FormValidator {
     }
 
     validateLoginForm() {
-        const usernameInput = document.querySelector('input[type="text"]');
-        const passwordInput = document.querySelector('input[type="password"]');
+        const usernameInput = document.getElementById('username');
+        const passwordInput = document.getElementById('password');
         
         let isValid = true;
 
@@ -99,19 +99,13 @@ class FormValidator {
 
         // Validate username
         if (!this.validateRequired(usernameInput.value)) {
-            this.showError(usernameInput, 'Username is required');
-            isValid = false;
-        } else if (!this.validateName(usernameInput.value)) {
-            this.showError(usernameInput, 'Please enter a valid username (letters only, min 2 characters)');
+            this.showError(usernameInput, 'Username/Email is required');
             isValid = false;
         }
 
         // Validate password
         if (!this.validateRequired(passwordInput.value)) {
             this.showError(passwordInput, 'Password is required');
-            isValid = false;
-        } else if (!this.validatePassword(passwordInput.value)) {
-            this.showError(passwordInput, 'Password must be at least 6 characters');
             isValid = false;
         }
 
@@ -154,11 +148,17 @@ class FormValidator {
     }
 
     clearLoginForm() {
-        const inputs = document.querySelectorAll('.con input');
-        inputs.forEach(input => {
-            input.value = '';
-            this.clearError(input);
-        });
+        const usernameInput = document.getElementById('username');
+        const passwordInput = document.getElementById('password');
+        
+        if (usernameInput) {
+            usernameInput.value = '';
+            this.clearError(usernameInput);
+        }
+        if (passwordInput) {
+            passwordInput.value = '';
+            this.clearError(passwordInput);
+        }
     }
 
     // Registration Form Validation
@@ -286,6 +286,49 @@ class FormValidator {
         }
     }
 
+    performRegistration() {
+        const formData = new FormData();
+        formData.append('firstName', document.getElementById('firstName').value);
+        formData.append('lastName', document.getElementById('lastName').value);
+        formData.append('email', document.getElementById('email').value);
+        formData.append('phone', document.getElementById('phone').value);
+        formData.append('password', document.getElementById('password').value);
+        formData.append('department', document.getElementById('department').value);
+        
+        // Get selected gender
+        const genderInputs = document.querySelectorAll('input[name="Gender"]:checked');
+        formData.append('gender', genderInputs.length > 0 ? genderInputs[0].value : '');
+        
+        // Get selected hobbies
+        const hobbies = [];
+        document.querySelectorAll('input[name="Hobbies"]:checked').forEach(checkbox => {
+            hobbies.push(checkbox.value);
+        });
+        hobbies.forEach(hobby => formData.append('hobbies[]', hobby));
+        
+        formData.append('otherInfo', document.querySelector('textarea').value);
+
+        fetch('register.php', {
+            method: 'POST',
+            body: formData
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                this.showSuccessMessage(data.message);
+                setTimeout(() => {
+                    window.location.href = 'LOGIN.html';
+                }, 2000);
+            } else {
+                this.showErrorMessage(data.message);
+            }
+        })
+        .catch(error => {
+            console.error('Registration error:', error);
+            this.showErrorMessage('Network error. Please try again.');
+        });
+    }
+
     clearRegistrationForm() {
         const inputs = document.querySelectorAll('.con input[type="text"]');
         const textarea = document.querySelector('textarea');
@@ -331,6 +374,37 @@ class FormValidator {
                 successDiv.remove();
             }
         }, 3000);
+    }
+
+    showErrorMessage(message) {
+        // Remove existing error messages
+        const existingError = document.querySelector('.error-popup');
+        if (existingError) {
+            existingError.remove();
+        }
+
+        const errorDiv = document.createElement('div');
+        errorDiv.className = 'error-popup';
+        errorDiv.textContent = message;
+        errorDiv.style.cssText = `
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: #dc3545;
+            color: white;
+            padding: 15px 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            z-index: 1000;
+            font-weight: bold;
+        `;
+        document.body.appendChild(errorDiv);
+
+        setTimeout(() => {
+            if (errorDiv.parentNode) {
+                errorDiv.remove();
+            }
+        }, 5000);
     }
 }
 
